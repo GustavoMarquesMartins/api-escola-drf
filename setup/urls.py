@@ -11,8 +11,8 @@ router.register('cursos', CursosViewSet, basename='Cursos')
 router.register('matriculas', MatriculaViewSet, basename='Matriculas')
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('painel-de-controle/', admin.site.urls),
     path('', include(router.urls) ),
     path('alunos/<int:pk>/matriculas/', ListaMatriculasAluno.as_view(), name='Aluno_Matriculas'), # retornar todas as matriculas realizadas por um aluno
     path('cursos/<int:pk>/matriculas/', ListaAlunosMatriculados.as_view(), name='Curso_Matriculas')  # retornar todas as matriculas feita para um curso
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] +  static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
