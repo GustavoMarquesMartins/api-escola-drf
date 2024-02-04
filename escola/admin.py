@@ -9,6 +9,7 @@ class Alunos(admin.ModelAdmin):
     list_per_page = 20
     
     def foto_preview(self, obj):
+        """ Função para mostrar/visualizar a imagem de um modelo no painel de controle do Django """
         return format_html(
             f'<img src="{obj.foto.url}" width="{obj.foto.width}" height="{obj.foto.height} style="border-radius: 50% 50%;" />'
             )

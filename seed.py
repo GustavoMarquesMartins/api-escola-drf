@@ -1,5 +1,9 @@
 import os, django
 
+# Arquivo usado para popular o banco de dados para teste durante o desenvolvimento
+# Como usar:
+# Dentro do diretório raiz do projeto, utilize o comando python seed.py
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'setup.settings')
 django.setup()
 
