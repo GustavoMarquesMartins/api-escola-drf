@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -25,8 +24,8 @@ SECRET_KEY = str(os.getenv('SECRET_KEY'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-
+# Lista de hosts/domínios que têm permissão para acessar esta API.
+ALLOWED_HOSTS = ['localhost', '127.0.0.1'] 
 
 # Application definition
 
@@ -38,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    
+    # meus apps
     'escola',
     'corsheaders',
     'admin_honeypot',
@@ -75,7 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'setup.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
@@ -85,7 +85,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -105,7 +104,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -119,7 +117,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
@@ -129,74 +126,67 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
 
 MEDIA_URL = '/media/'
 
-
 REST_FRAMEWORK = {
-   # Define um parâmetro 'version' para todas as URLs
+    # Define como a versão da API será identificada nas URLs, permitindo múltiplas versões da API.
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.QueryParameterVersioning',
 
-#   # Define todas as classes de permissão da API
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated',
-#         'rest_framework.permissions.DjangoModelPermissions',
-#     ],
+    # (Desativado) Configura as regras de permissão da API, que determinam quem pode acessar recursos específicos.
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated', # Exige autenticação
+    #     'rest_framework.permissions.DjangoModelPermissions', # Respeita permissões do modelo Django
+    # ],
 
-    # Define todas as classes de autenticação da API
+    # Configura a autenticação básica da API, que usa nome de usuário e senha para autenticação.
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
     ],
 
-    # Define as classes de controle de requisição da API.
-     'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle'
-        ],
+    # Configura as classes de controle de taxa de requisições da API, que limitam o número de requisições.
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle' # Limita taxa para usuários anônimos
+    ],
 
+    # Define a taxa máxima de requisições permitidas por dia para usuários anônimos, ajudando a prevenir abuso.
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '20/day',
+        'anon': '200000/day', # Limita a 20 requisições por dia
     },
 
+    # (Desativado) Configura as classes de parser da API, que interpretam os dados das requisições.
     # 'DEFAULT_PARSER_CLASSES': [
-    #     'rest_framework.parsers.JSONParser',
-    #     'rest_framework_xml.parsers.XMLParser',
+    #     'rest_framework.parsers.JSONParser', # Interpreta dados em formato JSON
+    #     'rest_framework_xml.parsers.XMLParser', # Interpreta dados em formato XML
     # ],
     
+    # (Desativado) Configura as classes de renderização da API, que formatam os dados das respostas.
     # 'DEFAULT_RENDERER_CLASSES': [
-    #     'rest_framework.renderers.JSONRenderer',
-    #     'rest_framework_xml.renderers.XMLRenderer'
+    #     'rest_framework.renderers.JSONRenderer', # Formata respostas em JSON
+    #     'rest_framework_xml.renderers.XMLRenderer' # Formata respostas em XML
     # ],
 }
 
-# Permite acesso de origens diferentes"
+# Configura as origens permitidas para requisições CORS, permitindo que a API seja acessada de diferentes domínios.
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "http://localhost:3000", # Permite requisições do localhost na porta 3000
 ]
 
-# CACHES = {
+# (Desativado) Configura o uso do Redis como sistema de cache para melhorar o desempenho da API.
+# 'CACHES': {
 #     "default": {
-    
-#         # Define a lib que vai ser usada para realizar a comunicação com o redis 
-#         "BACKEND": "django_redis.cache.RedisCache", 
-
-#         # Local onde o servidor do redis está rodando
-#         "LOCATION": "redis://localhost:6379/1",
-
-#         # Dicionário que permite especificar opções adicionais para o cliente Redis 
+#         "BACKEND": "django_redis.cache.RedisCache", # Usa Redis como backend de cache
+#         "LOCATION": "redis://localhost:6379/1", # Endereço do servidor Redis
 #         "OPTIONS": {
-        
-#           # Especifica qual classe para interagir com o servidor Redis. 
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient", # Classe do cliente Redis
 #         }
 #     }
 # }
 
+# Define o mecanismo de armazenamento de sessões para usar o cache, o que pode melhorar a performance e a escalabilidade.
+SESSION_ENGINE = "django.contrib.sessions.backends.cache" # Usa o cache para armazenar sessões
 
-# Define o mecanismo que o Django usará para armazenar e recuperar dados de sessão
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# Especifica o alias do cache a ser utilizado pelo mecanismo de sessões, garantindo que as sessões sejam armazenadas no cache correto.
+SESSION_CACHE_ALIAS = "default" # Usa o cache padrão para armazenar sessões
 
-# Especificando qual cache o Django deve usar
-SESSION_CACHE_ALIAS = "default" 
-
-# Define mensagems personalizadas
+# Define o caminho para arquivos de localização (internacionalização), que contêm strings traduzidas para diferentes idiomas.
 LOCALE_PATHS = (
-  os.path.join(BASE_DIR, 'locale/'),
+ os.path.join(BASE_DIR, 'locale/'), # Caminho para pasta de arquivos de localização
 )
-
